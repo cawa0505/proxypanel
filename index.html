@@ -234,7 +234,9 @@
 
                                                     function ajaxget(url, callback) {
                                                         var headers = {};
-                                                        headers.Authorization = 'Bearer ' + localStorage.proxy_token;
+                                                        if (localStorage.proxy_token !== undefined && localStorage.proxy_token !== null && localStorage.proxy_token.length > 0) {
+                                                            headers.Authorization = 'Bearer ' + localStorage.proxy_token;
+                                                        }
                                                         $.ajax({
                                                             type: 'get',
                                                             headers: headers,
