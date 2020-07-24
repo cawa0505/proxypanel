@@ -5,6 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Proxy panel</title>
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <meta http-equiv="Access-Control-Allow-Origin" content="*">
         <link rel="stylesheet" href="modules/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="modules/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="modules/Ionicons/css/ionicons.min.css">
@@ -178,6 +179,10 @@
                                                 <span class="input-group-addon" style="width: 10%">Proxy URL</span>
                                                 <input type="text" class="form-control" id="sproxy" placeholder="Proxy URL" style="width: 100%">
                                             </div>
+                                            <div class="input-group" style="width: 100%">
+                                                <span class="input-group-addon" style="width: 10%">Token</span>
+                                                <input type="text" class="form-control" id="tproxy" placeholder="Proxy Token" style="width: 100%">
+                                            </div>
                                             <br>
                                             <div class="input-group pull-right">
                                                 <button type="button" class="btn btn-block btn-success" onclick="setProxy()">Save</button>
@@ -228,8 +233,11 @@
                                                     };
 
                                                     function ajaxget(url, callback) {
+                                                        var headers = {};
+                                                        headers.Authorization = 'Bearer ' + localStorage.proxy_token;
                                                         $.ajax({
-                                                            type: 'GET',
+                                                            type: 'get',
+                                                            headers: headers,
                                                             url: url,
                                                             success: callback,
                                                             dataType: 'json'
@@ -291,6 +299,7 @@
                                                             var sproxy = trim($('#sproxy').val(), 'http://');
                                                             sproxy = trim(sproxy, '/');
                                                             localStorage.proxy_url = 'http://' + sproxy;
+                                                            localStorage.proxy_token = $('#tproxy').val();
                                                         }
                                                     }
 
@@ -337,16 +346,16 @@
                                                     }
 
                                                     function getProxyMainInfo() {
-                                                        ajaxget(localStorage.proxy_url, mainInfoCallback);
+                                                        ajaxget(localStorage.proxy_url + '/1/summary', mainInfoCallback);
                                                         miRefresh = setInterval(function () {
-                                                            ajaxget(localStorage.proxy_url, mainInfoCallback);
+                                                            ajaxget(localStorage.proxy_url + '/1/summary', mainInfoCallback);
                                                         }, 60000);
                                                     }
 
                                                     function getProxyWorkersInfo() {
-                                                        ajaxget(localStorage.proxy_url + '/workers.json', workersInfoCallback);
+                                                        ajaxget(localStorage.proxy_url + '/1/workers', workersInfoCallback);
                                                         wiRefresh = setInterval(function () {
-                                                            ajaxget(localStorage.proxy_url + '/workers.json', workersInfoCallback);
+                                                            ajaxget(localStorage.proxy_url + '/1/workers', workersInfoCallback);
                                                         }, 60000);
                                                     }
 
